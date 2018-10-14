@@ -1,0 +1,39 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="03" author="phquoc25">
+        <createTable tableName="CAR"
+                     remarks="A table to contain all cars">
+            <column name="ID" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="REGISTRATION_NUMBER" type="varchar(11)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="COMPANY_ID" type="bigint"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="COMPANY_ID"
+                                 baseTableName="CAR"
+                                 constraintName="CAR_COMPANY_ID_fk"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="COMPANY"/>
+    </changeSet>
+</databaseChangeLog>
+
+<!--
+CREATE TABLE CAR
+(
+    ID bigint NOT NULL,
+    REGISTRATION_NUMBER VARCHAR(11) NOT NULL,
+    COMPANY_ID bigint,
+    CONSTRAINT CAR_COMPANY_ID_fk FOREIGN KEY (COMPANY_ID) REFERENCES COMPANY (ID)
+);
+CREATE UNIQUE INDEX CAR_ID_uindex ON CAR (ID);
+CREATE UNIQUE INDEX CAR_REGISTRATION_NUMBER_uindex ON CAR (REGISTRATION_NUMBER);
+-->
