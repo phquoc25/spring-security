@@ -1,0 +1,40 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="02" author="phquoc25">
+        <createTable tableName="ADDRESS"
+                     remarks="A table to contain all addresses">
+            <column name="ID" type="bigint">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="HOUSE_NUMBER" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STREET" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ZIP_CODE" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="ID"
+                          incrementBy="1"
+                          startWith="100"
+                          tableName="ADDRESS"/>
+    </changeSet>
+</databaseChangeLog>
+<!--
+CREATE TABLE ADDRESS
+(
+    ID bigint PRIMARY KEY NOT NULL,
+    HOUSE_NUMBER int NOT NULL,
+    STREET VARCHAR(255) NOT NULL,
+    ZIP_CODE int NOT NULL
+);
+CREATE UNIQUE INDEX ADDRESS_ID_uindex ON ADDRESS (ID);
+-->
