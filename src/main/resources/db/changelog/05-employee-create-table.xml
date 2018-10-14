@@ -1,0 +1,57 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="05" author="phquoc25">
+        <createTable tableName="EMPLOYEE"
+                     remarks="A table to contain all employees">
+            <column name="ID" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SURENAME" type="varchar(255)"/>
+            <column name="ADDRESS_ID" type="bigint"/>
+            <column name="DEPARTMENT_ID" type="bigint"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="ADDRESS_ID"
+                                 baseTableName="EMPLOYEE"
+                                 constraintName="EMPLOYEE_ADDRESS_ID_fk"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="ADDRESS"/>
+
+        <addForeignKeyConstraint baseColumnNames="DEPARTMENT_ID"
+                                 baseTableName="EMPLOYEE"
+                                 constraintName="EMPLOYEE_DEPARTMENT_ID_fk"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="DEPARTMENT"/>
+
+        <createIndex indexName="idx_department"
+                     tableName="EMPLOYEE"
+                     tablespace="A String">
+            <column name="DEPARTMENT_ID" type="bigint"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
+
+<!--CREATE TABLE EMPLOYEE
+(
+    ID bigint PRIMARY KEY NOT NULL,
+    NAME VARCHAR(255) NOT NULL,
+    SURENAME VARCHAR(255),
+    ADDRESS_ID bigint,
+    DEPARTMENT_ID bigint,
+    CONSTRAINT EMPLOYEE_ADDRESS_ID_fk FOREIGN KEY (ADDRESS_ID) REFERENCES ADDRESS (ID),
+    CONSTRAINT EMPLOYEE_DEPARTMENT_ID_fk FOREIGN KEY (DEPARTMENT_ID) REFERENCES DEPARTMENT (ID)
+);
+CREATE UNIQUE INDEX EMPLOYEE_ID_uindex ON EMPLOYEE (ID);
+CREATE INDEX EMPLOYEE_DEPARTMENT_ID_index ON EMPLOYEE (DEPARTMENT_ID);
+-->
