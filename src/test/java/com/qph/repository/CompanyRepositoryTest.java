@@ -39,4 +39,22 @@ public class CompanyRepositoryTest {
             assertEquals(companyName, company1.getName());
         });
     }
+
+    @Test
+    public void test_addCompany_then_findById() {
+        // GIVEN
+        String companyName = "a company";
+        Company company = new Company();
+        company.setName(companyName);
+        // WHEN
+        Company savedCompany = companyRepository.save(company);
+        Long savedCompanyId = savedCompany.getId();
+        Optional<Company> actualResult = companyRepository.findById(savedCompanyId);
+        // THEN
+        assertTrue(actualResult.isPresent());
+        actualResult.ifPresent(company1 -> {
+            assertEquals(company1.getId(), savedCompanyId);
+            assertEquals(companyName, company1.getName());
+        });
+    }
 }
