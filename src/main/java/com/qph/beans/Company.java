@@ -1,6 +1,7 @@
 package com.qph.beans;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "COMPANY")
@@ -24,5 +25,19 @@ public class Company {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return Objects.equals(id, company.id) &&
+                Objects.equals(name, company.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }
