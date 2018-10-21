@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="07" author="phquoc25">
+        <createTable tableName="AUTHORITY"
+                     remarks="A table to contain all users">
+            <column name="ID" type="bigint" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="NAME" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
+<!--
+CREATE TABLE AUTHORITY
+(
+    ID bigint PRIMARY KEY NOT NULL,
+    NAME VARCHAR(50) NOT NULL
+);
+CREATE UNIQUE INDEX AUTHORITY_ID_uindex ON AUTHORITY (ID);
+CREATE UNIQUE INDEX AUTHORITY_NAME_uindex ON AUTHORITY (NAME);
+-->
