@@ -9,4 +9,5 @@
     <include file="changelog/03-car-create-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/04-department-create-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/05-employee-create-table.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/06-user-create-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
