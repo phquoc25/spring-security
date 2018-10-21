@@ -13,4 +13,6 @@
     <include file="changelog/07-authority-create-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/08-users-authorities-create-table.xml" relativeToChangelogFile="true"/>
     <include file="changelog/09-authority-init-data.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/10-users-add-enable-column.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/11-users-init-data.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
