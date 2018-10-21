@@ -7,7 +7,7 @@
     <changeSet id="07" author="phquoc25">
         <createTable tableName="AUTHORITY"
                      remarks="A table to contain all authorities">
-            <column name="ID" type="bigint" autoIncrement="true">
+            <column name="ID" type="bigint">
                 <constraints nullable="false" unique="true" primaryKey="true"/>
             </column>
             <column name="NAME" type="varchar(50)">
