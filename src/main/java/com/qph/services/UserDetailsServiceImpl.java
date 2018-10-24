@@ -2,7 +2,6 @@ package com.qph.services;
 
 import com.qph.beans.User;
 import com.qph.repository.UserRepository;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@Primary
 public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
