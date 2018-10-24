@@ -1,0 +1,37 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="06" author="phquoc25">
+        <createTable tableName="USER_"
+                     remarks="A table to contain all users">
+            <column name="ID" type="bigint">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="USER_NAME" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PASSWORD" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ACCOUNT_EXPIRED" type="boolean" defaultValue="false"/>
+            <column name="ACCOUNT_LOCKED" type="boolean" defaultValue="false"/>
+            <column name="CREDENTIALS_EXPIRED" type="boolean" defaultValue="false"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
+<!--
+CREATE TABLE USER_
+(
+    ID bigint PRIMARY KEY NOT NULL,
+    USER_NAME VARCHAR(100) NOT NULL,
+    PASSWORD VARCHAR(255) NOT NULL,
+    ACCOUNT_EXPIRED BOOLEAN DEFAULT FALSE ,
+    ACCOUNT_LOCKED BOOLEAN DEFAULT FALSE ,
+    CREDENTIALS_EXPIRED BOOLEAN DEFAULT FALSE
+);
+CREATE UNIQUE INDEX USER__ID_uindex ON USER_ (ID);
+CREATE UNIQUE INDEX USER__USER_NAME_uindex ON USER_ (USER_NAME);
+-->

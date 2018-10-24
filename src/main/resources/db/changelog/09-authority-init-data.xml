@@ -1,0 +1,22 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="09" author="phquoc25">
+        <loadData file="db/data/authority.csv"
+                  quotchar="'"
+                  tableName="AUTHORITY"/>
+    </changeSet>
+</databaseChangeLog>
+<!--
+INSERT INTO AUTHORITY(ID, NAME) VALUES (1, 'COMPANY_CREATE');
+INSERT INTO AUTHORITY(ID, NAME) VALUES (2, 'COMPANY_READ');
+INSERT INTO AUTHORITY(ID, NAME) VALUES (3, 'COMPANY_UPDATE');
+INSERT INTO AUTHORITY(ID, NAME) VALUES (4, 'COMPANY_DELETE');
+INSERT INTO AUTHORITY(ID, NAME) VALUES (5, 'DEPARTMENT_CREATE');
+INSERT INTO AUTHORITY(ID, NAME) VALUES (6, 'DEPARTMENT_READ');
+INSERT INTO AUTHORITY(ID, NAME) VALUES (7, 'DEPARTMENT_UPDATE');
+INSERT INTO AUTHORITY(ID, NAME) VALUES (8, 'DEPARTMENT_DELETE');
+-->

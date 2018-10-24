@@ -1,0 +1,49 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="08" author="phquoc25">
+        <createTable tableName="USERS_AUTHORITIES"
+                     remarks="A table to contain all authorities of users">
+            <column name="USER_ID" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="AUTHORITY_ID" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="USER_ID"
+                                 baseTableName="USERS_AUTHORITIES"
+                                 constraintName="USERS_AUTHORITIES_USER_ID_fk"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="USER_"/>
+
+        <addForeignKeyConstraint baseColumnNames="AUTHORITY_ID"
+                                 baseTableName="USERS_AUTHORITIES"
+                                 constraintName="USERS_AUTHORITIES_AUTHORITY_ID_fk"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="AUTHORITY"/>
+
+        <addPrimaryKey columnNames="USER_ID, AUTHORITY_ID"
+                       constraintName="USERS_AUTHORITIES_USER_ID_AUTHORITY_ID_pk"
+                       tableName="USERS_AUTHORITIES"
+                       tablespace="A String"/>
+    </changeSet>
+</databaseChangeLog>
+<!--
+CREATE TABLE USERS_AUTHORITIES
+(
+    USER_ID bigint NOT NULL,
+    AUTHORITY_ID bigint NOT NULL,
+    CONSTRAINT USERS_AUTHORITIES_USER_ID_AUTHORITY_ID_pk PRIMARY KEY (USER_ID, AUTHORITY_ID),
+    CONSTRAINT USERS_AUTHORITIES_USER__ID_fk FOREIGN KEY (USER_ID) REFERENCES USER_ (ID),
+    CONSTRAINT USERS_AUTHORITIES_AUTHORITY_ID_fk FOREIGN KEY (AUTHORITY_ID) REFERENCES AUTHORITY (ID)
+);
+-->
