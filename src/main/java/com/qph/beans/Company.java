@@ -6,10 +6,12 @@ import java.util.Objects;
 @Entity
 @Table(name = "COMPANY")
 public class Company {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "NAME")
     private String name;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -18,7 +20,6 @@ public class Company {
         this.id = id;
     }
 
-    @Column(name = "NAME")
     public String getName() {
         return name;
     }
