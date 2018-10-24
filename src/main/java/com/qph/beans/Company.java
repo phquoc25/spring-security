@@ -10,10 +10,12 @@ import java.util.Objects;
 @Table(name = "COMPANY")
 @JsonPropertyOrder({"id", "name"})
 public class Company {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "NAME")
     private String name;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
     public Long getId() {
         return id;
@@ -23,7 +25,6 @@ public class Company {
         this.id = id;
     }
 
-    @Column(name = "NAME")
     @JsonProperty("name")
     public String getName() {
         return name;
