@@ -24,6 +24,16 @@ import javax.sql.DataSource;
 @EnableAuthorizationServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Import(ServerSecurityConfig.class)
+/*
+ * provide http://localhost:8080/oauth/token with basic authentication to get the token
+ * curl -X POST \
+  http://localhost:8080/oauth/token \
+  -H 'authorization: Basic c3ByaW5nLXNlY3VyaXR5LW9hdXRoMi1yZWFkLXdyaXRlLWNsaWVudDpzcHJpbmctc2VjdXJpdHktb2F1dGgyLXJlYWQtd3JpdGUtY2xpZW50LXBhc3N3b3JkMTIzNA==' \
+  -F grant_type=password \
+  -F username=admin \
+  -F password=admin1234 \
+  -F client_id=spring-security-oauth2-read-write-client
+ */
 public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private PasswordEncoder oauthClientPasswordEncoder;
@@ -43,6 +53,7 @@ public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter
     {
         return new OAuth2AccessDeniedHandler();
     }
+
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception
     {
