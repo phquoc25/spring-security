@@ -16,4 +16,5 @@
     <include file="changelog/10-users-add-enable-column.xml" relativeToChangelogFile="true"/>
     <include file="changelog/11-users-init-data.xml" relativeToChangelogFile="true"/>
     <include file="changelog/12-user-authorities-init-data.xml" relativeToChangelogFile="true"/>
+    <include file="changelog/13-oauth2-create-tables.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
