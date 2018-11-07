@@ -46,6 +46,24 @@ public class CompanyServiceImplTest {
     }
 
     @Test
+    public void testGetByName() {
+        // GIVEN
+        String companyName = "company name";
+        Company expectedCompany = new Company();
+        long id = 11L;
+        expectedCompany.setId(id);
+        expectedCompany.setName(companyName);
+
+        doReturn(Optional.of(expectedCompany)).when(companyRepository).findByName(companyName);
+        // WHEN
+        Optional<Company> actualResult = companyService.get(companyName);
+        // THEN
+        verify(companyRepository).findByName(companyName);
+        assertTrue(actualResult.isPresent());
+        actualResult.ifPresent(company -> assertEquals(expectedCompany, company));
+    }
+
+    @Test
     public void testCreateCompany() {
         // GIVEN
         String companyName = "company name";

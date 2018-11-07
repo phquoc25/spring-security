@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
+
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -38,5 +40,12 @@ public class CompanyController {
     @ResponseBody
     public Company get(@PathVariable Long id) {
         return companyService.get(id).orElse(null);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseBody
+    public Company getByName(@PathParam("name") String name) {
+        return companyService.get(name).orElse(null);
     }
 }
