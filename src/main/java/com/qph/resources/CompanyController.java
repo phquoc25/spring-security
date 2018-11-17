@@ -1,6 +1,7 @@
 package com.qph.resources;
 
 import com.qph.beans.Company;
+import com.qph.exception.EntityNotFoundException;
 import com.qph.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
@@ -39,7 +40,7 @@ public class CompanyController {
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody
     public Company get(@PathVariable Long id) {
-        return companyService.get(id).orElse(null);
+        return companyService.get(id).orElseThrow(() -> new EntityNotFoundException("No company found with ID " + id));
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

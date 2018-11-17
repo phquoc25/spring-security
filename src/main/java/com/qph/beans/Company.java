@@ -1,15 +1,20 @@
 package com.qph.beans;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Table(name = "COMPANY")
+@JsonPropertyOrder({"id", "name"})
 public class Company {
     private Long id;
     private String name;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     public Long getId() {
         return id;
     }
@@ -19,6 +24,7 @@ public class Company {
     }
 
     @Column(name = "NAME")
+    @JsonProperty("name")
     public String getName() {
         return name;
     }

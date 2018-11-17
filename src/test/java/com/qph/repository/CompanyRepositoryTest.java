@@ -57,4 +57,21 @@ public class CompanyRepositoryTest {
             assertEquals(companyName, company1.getName());
         });
     }
+
+    @Test
+    public void testUpdateCompany()
+    {
+        // GIVEN
+        String companyName = "a company";
+        String newName = "new company name";
+        Company company = new Company();
+        company.setName(companyName);
+        // WHEN
+        companyRepository.save(company);
+
+        company.setName(newName);
+        Company updatedCompany = companyRepository.save(company);
+        // THEN
+        assertEquals(newName, updatedCompany.getName());
+    }
 }
