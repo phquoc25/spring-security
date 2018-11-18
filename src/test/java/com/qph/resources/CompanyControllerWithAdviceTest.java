@@ -15,9 +15,11 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -38,7 +40,7 @@ public class CompanyControllerWithAdviceTest {
     }
 
     @Test
-    public void testGetByIdApi_ShouldReturnEmptyJson_WhenServiceReturnNull() throws Exception {
+    public void testGetByIdApi_ShouldReturn404StatusCode_WhenServiceReturnNull() throws Exception {
         // GIVEN
         doReturn(Optional.empty()).when(companyService).get(anyLong());
 
@@ -47,5 +49,17 @@ public class CompanyControllerWithAdviceTest {
                 .andExpect(status().isNotFound());
         // THEN
         verify(companyService).get(anyLong());
+    }
+
+    @Test
+    public void testGetByNameApi_ShouldReturn404StatusCode_WhenServiceReturnNull() throws Exception {
+        // GIVEN
+        doReturn(Optional.empty()).when(companyService).get(anyString());
+
+        // WHEN
+        mockMvc.perform(get("/secured/company?name=toto"))
+                .andExpect(status().isNotFound());
+        // THEN
+        verify(companyService).get(anyString());
     }
 }

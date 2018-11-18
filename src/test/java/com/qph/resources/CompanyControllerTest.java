@@ -35,12 +35,14 @@ public class CompanyControllerTest {
     }
 
     @Test
-    public void create() {
+    public void create()
+    {
 
     }
 
     @Test
-    public void testGetByIdApi() throws Exception {
+    public void testGetByIdApi() throws Exception
+    {
         // GIVEN
         long companyId = 100;
         Company expectedCompany = new Company();
@@ -57,6 +59,20 @@ public class CompanyControllerTest {
     }
 
     @Test
-    public void getByName() {
+    public void testGetByName() throws Exception
+    {
+        // GIVEN
+        String companyName = "aName";
+        Company expectedCompany = new Company();
+        expectedCompany.setId(100L);
+        expectedCompany.setName(companyName);
+        doReturn(Optional.of(expectedCompany)).when(companyService).get(companyName);
+
+        // WHEN
+        mockMvc.perform(get("/secured/company?name=" + companyName))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{id:100,name:aName}"));
+        // THEN
+        verify(companyService).get(companyName);
     }
 }
