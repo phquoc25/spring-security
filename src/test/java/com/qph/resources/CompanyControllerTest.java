@@ -1,5 +1,6 @@
 package com.qph.resources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qph.beans.Company;
 import com.qph.services.CompanyService;
 import org.junit.Before;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -15,7 +17,9 @@ import java.util.Optional;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,17 +31,36 @@ public class CompanyControllerTest {
 
     private MockMvc mockMvc;
 
+    private ObjectMapper objectMapper;
+
     @Before
     public void setUp() throws Exception
     {
         companyController = new CompanyController(companyService);
         mockMvc = MockMvcBuilders.standaloneSetup(companyController).build();
+        objectMapper = new ObjectMapper();
     }
 
     @Test
-    public void create()
-    {
+    public void testCreateCompany() throws Exception {
+        // GIVEN
+        Company inputCompany = new Company();
+        inputCompany.setName("aName");
 
+        long companyId = 100;
+        Company expectedCompany = new Company();
+        expectedCompany.setId(companyId);
+        expectedCompany.setName("aName");
+        doReturn(expectedCompany).when(companyService).create(inputCompany);
+
+        // WHEN
+        mockMvc.perform(post("/secured/company")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(inputCompany))
+                )
+                .andExpect(status().isCreated());
+        // THEN
+        verify(companyService).create(inputCompany);
     }
 
     @Test
@@ -51,7 +74,7 @@ public class CompanyControllerTest {
         doReturn(Optional.of(expectedCompany)).when(companyService).get(companyId);
 
         // WHEN
-        mockMvc.perform(get("/secured/company/" + companyId))
+        mockMvc.perform(get("/secured/company/{id}", companyId))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{id:100,name:aName}"));
         // THEN
@@ -69,7 +92,7 @@ public class CompanyControllerTest {
         doReturn(Optional.of(expectedCompany)).when(companyService).get(companyName);
 
         // WHEN
-        mockMvc.perform(get("/secured/company?name=" + companyName))
+        mockMvc.perform(get("/secured/company").param("name", companyName))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{id:100,name:aName}"));
         // THEN

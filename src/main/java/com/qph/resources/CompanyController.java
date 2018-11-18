@@ -27,7 +27,6 @@ public class CompanyController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<?> create(@RequestBody Company company) {
         companyService.create(company);
         HttpHeaders headers = new HttpHeaders();
