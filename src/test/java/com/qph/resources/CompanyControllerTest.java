@@ -18,6 +18,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,7 +35,7 @@ public class CompanyControllerTest {
     private ObjectMapper objectMapper;
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
     {
         companyController = new CompanyController(companyService);
         mockMvc = MockMvcBuilders.standaloneSetup(companyController).build();
@@ -61,6 +62,28 @@ public class CompanyControllerTest {
                 .andExpect(status().isCreated());
         // THEN
         verify(companyService).create(inputCompany);
+    }
+
+    @Test
+    public void testUpdateCompany() throws Exception {
+        // GIVEN
+        Company inputCompany = new Company();
+        inputCompany.setId(1L);
+        inputCompany.setName("aName");
+
+        Company expectedCompany = new Company();
+        expectedCompany.setId(1L);
+        expectedCompany.setName("updated name");
+        doReturn(expectedCompany).when(companyService).update(inputCompany);
+
+        // WHEN
+        mockMvc.perform(put("/secured/company")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(inputCompany))
+        )
+                .andExpect(status().isOk());
+        // THEN
+        verify(companyService).update(inputCompany);
     }
 
     @Test

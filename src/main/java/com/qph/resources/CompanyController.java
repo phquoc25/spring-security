@@ -35,6 +35,15 @@ public class CompanyController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@RequestBody Company company) {
+        companyService.update(company);
+        HttpHeaders headers = new HttpHeaders();
+        ControllerLinkBuilder linkBuilder = linkTo(methodOn(CompanyController.class).get(company.getId()));
+        headers.setLocation(linkBuilder.toUri());
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody

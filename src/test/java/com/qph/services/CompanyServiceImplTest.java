@@ -81,4 +81,25 @@ public class CompanyServiceImplTest {
         verify(companyRepository).save(company);
         assertEquals(expectedCompany, actualResult);
     }
+
+    @Test
+    public void testUpdateCompany() {
+        // GIVEN
+        String companyName = "company name";
+        String updatedCompanyName = "company name 1";
+        Company company = new Company();
+        company.setName(companyName);
+
+        Company updatedCompany = new Company();
+        updatedCompany.setId(11L);
+        updatedCompany.setName(updatedCompanyName);
+        doReturn(updatedCompany).when(companyRepository).save(company);
+
+        // WHEN
+        Company actualCompany = companyService.update(company);
+
+        // THEN
+        verify(companyRepository).save(company);
+        assertEquals(updatedCompany, actualCompany);
+    }
 }
