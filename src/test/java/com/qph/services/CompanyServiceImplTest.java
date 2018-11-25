@@ -8,14 +8,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
@@ -101,5 +101,39 @@ public class CompanyServiceImplTest {
         // THEN
         verify(companyRepository).save(company);
         assertEquals(updatedCompany, actualCompany);
+    }
+
+    @Test
+    public void testDeleteCompany() {
+        // GIVEN
+        Long companyId = 11L;
+        String companyName = "company name";
+        Company company = new Company();
+        company.setName(companyName);
+
+        doNothing().when(companyRepository).deleteById(companyId);
+
+        // WHEN
+        companyService.delete(companyId);
+
+        // THEN
+        verify(companyRepository).deleteById(companyId);
+    }
+
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void testDeleteCompanyWhenIdNotFound() {
+        // GIVEN
+        Long companyId = 11L;
+        String companyName = "company name";
+        Company company = new Company();
+        company.setName(companyName);
+
+        doThrow(new EmptyResultDataAccessException(1)).when(companyRepository).deleteById(companyId);
+
+        // WHEN
+        companyService.delete(companyId);
+
+        // THEN
+        verify(companyRepository).deleteById(companyId);
     }
 }

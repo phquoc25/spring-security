@@ -14,11 +14,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -120,5 +119,20 @@ public class CompanyControllerTest {
                 .andExpect(content().json("{id:100,name:aName}"));
         // THEN
         verify(companyService).get(companyName);
+    }
+
+    @Test
+    public void testDeleteCompany() throws Exception
+    {
+        // GIVEN
+        long companyId = 11L;
+        doNothing().when(companyService).delete(companyId);
+
+        // WHEN
+        mockMvc.perform(delete("/secured/company/{id}", companyId))
+                .andExpect(status().isOk());
+
+        // THEN
+        verify(companyService).delete(companyId);
     }
 }

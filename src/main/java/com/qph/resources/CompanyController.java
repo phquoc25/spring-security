@@ -4,9 +4,9 @@ import com.qph.beans.Company;
 import com.qph.exception.ResourceNotFoundException;
 import com.qph.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ public class CompanyController {
         HttpHeaders headers = new HttpHeaders();
         ControllerLinkBuilder linkBuilder = linkTo(methodOn(CompanyController.class).get(company.getId()));
         headers.setLocation(linkBuilder.toUri());
-        return new ResponseEntity<>(headers, HttpStatus.CREATED);
+        return ResponseEntity.created(linkBuilder.toUri()).headers(headers).build();
     }
 
     @RequestMapping(method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,20 +41,28 @@ public class CompanyController {
         HttpHeaders headers = new HttpHeaders();
         ControllerLinkBuilder linkBuilder = linkTo(methodOn(CompanyController.class).get(company.getId()));
         headers.setLocation(linkBuilder.toUri());
-        return new ResponseEntity<>(headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).build();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
-    @ResponseBody
-    public Company get(@PathVariable Long id) {
-        return companyService.get(id).orElseThrow(() -> new ResourceNotFoundException("No company found with ID " + id));
+    public ResponseEntity<Company> get(@PathVariable Long id) {
+        Company company = companyService.get(id).orElseThrow(() -> new ResourceNotFoundException("No company found with ID " + id));
+        return ResponseEntity.ok().body(company);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
-    @ResponseBody
-    public Company getByName(@PathParam("name") String name) {
-        return companyService.get(name).orElseThrow(() -> new ResourceNotFoundException("No company found with name " + name));
+    public ResponseEntity<Company> getByName(@PathParam("name") String name) {
+        Company company = companyService.get(name).orElseThrow(() -> new ResourceNotFoundException("No company found with name " + name));
+        return ResponseEntity.ok().body(company);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            companyService.delete(id);
+            return ResponseEntity.ok().build();
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(e.getMessage());
+        }
     }
 }

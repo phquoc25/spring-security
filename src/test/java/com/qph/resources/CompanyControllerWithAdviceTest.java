@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -17,7 +18,9 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,7 +48,7 @@ public class CompanyControllerWithAdviceTest {
         doReturn(Optional.empty()).when(companyService).get(anyLong());
 
         // WHEN
-        mockMvc.perform(get("/secured/company/100"))
+        mockMvc.perform(get("/secured/company/{id}", 100L))
                 .andExpect(status().isNotFound());
         // THEN
         verify(companyService).get(anyLong());
@@ -57,9 +60,21 @@ public class CompanyControllerWithAdviceTest {
         doReturn(Optional.empty()).when(companyService).get(anyString());
 
         // WHEN
-        mockMvc.perform(get("/secured/company?name=toto"))
+        mockMvc.perform(get("/secured/company").param("name", "toto"))
                 .andExpect(status().isNotFound());
         // THEN
         verify(companyService).get(anyString());
+    }
+
+    @Test
+    public void testDeleteCompany_ShouldReturn404StatusCode_WhenServiceThrowsException() throws Exception {
+        // GIVEN
+        doThrow(new EmptyResultDataAccessException(1)).when(companyService).delete(anyLong());
+
+        // WHEN
+        mockMvc.perform(delete("/secured/company/{id}", 11L))
+                .andExpect(status().isNotFound());
+        // THEN
+        verify(companyService).delete(anyLong());
     }
 }

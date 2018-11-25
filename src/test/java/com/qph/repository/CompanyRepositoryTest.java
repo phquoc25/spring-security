@@ -7,13 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -66,6 +63,7 @@ public class CompanyRepositoryTest {
         String newName = "new company name";
         Company company = new Company();
         company.setName(companyName);
+
         // WHEN
         companyRepository.save(company);
 
@@ -73,5 +71,22 @@ public class CompanyRepositoryTest {
         Company updatedCompany = companyRepository.save(company);
         // THEN
         assertEquals(newName, updatedCompany.getName());
+    }
+
+    @Test
+    public void testDeleteCompany() {
+        // GIVEN
+        String companyName = "a company";
+        Company company = new Company();
+        company.setName(companyName);
+        Company createdCompany = companyRepository.save(company);
+
+        // WHEN
+        Long createdCompanyId = createdCompany.getId();
+        companyRepository.deleteById(createdCompanyId);
+
+        // THEN
+        Optional<Company> resultCompany = companyRepository.findById(createdCompanyId);
+        assertFalse(resultCompany.isPresent());
     }
 }
