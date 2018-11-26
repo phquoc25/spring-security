@@ -1,5 +1,6 @@
 package com.qph.repository;
 
+import com.qph.beans.Authority;
 import com.qph.beans.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,8 +26,40 @@ public class UserRepositoryTest {
 
     @Test
     public void findByUsername() {
-        User reader = userRepository.findByUsername("reader");
-        Set<String> authorities = reader.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
-        assertEquals(Arrays.asList("COMPANY_READ", "DEPARTMENT_READ"), authorities);
+        // GIVEN
+        Set<Authority> authorities = new HashSet<>();
+        Authority comReadAuthority = new Authority();
+        comReadAuthority.setId(1);
+        comReadAuthority.setAuthority("COMPANY_READ");
+
+        Authority depmtAuthority = new Authority();
+        depmtAuthority.setId(2);
+        depmtAuthority.setAuthority("DEPARTMENT_READ");
+
+        authorities.add(comReadAuthority);
+        authorities.add(depmtAuthority);
+
+        String username = "reader";
+        String pass = "apwd";
+        User user = new User();
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setEnabled(true);
+        user.setUsername(username);
+        user.setPassword(pass);
+        user.setAuthorities(authorities);
+        userRepository.save(user);
+
+        // WHEN
+        User reader = userRepository.findByUsername(username);
+        Set<String> actualAuthorities = reader.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+
+        // THEN
+        Set<String> expectedAuth = new HashSet<>();
+        expectedAuth.add("COMPANY_READ");
+        expectedAuth.add("DEPARTMENT_READ");
+        assertEquals(expectedAuth, actualAuthorities);
+        assertEquals(pass, reader.getPassword());
     }
 }
