@@ -1,8 +1,3 @@
-:spring_version: current
-:spring_boot_version: 2.0.3.RELEASE
-:DispatcherServlet: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html
-:SpringApplication: http://docs.spring.io/spring-boot/docs/{spring_boot_version}/api/org/springframework/boot/SpringApplication.html
-:SpringBootSecurity: http://docs.spring.io/spring-boot/docs/{spring_boot_version}/reference/htmlsingle/#boot-features-security
 :toc:
 :icons: font
 :source-highlighter: prettify
@@ -11,59 +6,109 @@ This guide walks you through the process of creating a simple web application wi
 
 == What you'll build
 
-You'll build a Spring MVC application that secures the page with a login form backed by a fixed list of users.
+You'll build the secured Restfull apis
 
 == What you'll need
 
 :java_version: 1.8
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/prereq_editor_jdk_buildtools.adoc[]
+Spring security architecture
 
+include::https://spring.io/guides/topicals/spring-security-architecture/[]
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/how_to_complete_this_guide.adoc[]
+How to build the secure Rest apis using oauth2
 
+include::https://dzone.com/articles/secure-spring-rest-with-spring-security-and-oauth2[]
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-gradle.adoc[]
+We also use liquibase to manage the database changelog
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-maven.adoc[]
-
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/master/hide-show-sts.adoc[]
-
-
+[source,java]
+----
+<dependency>
+    <groupId>org.liquibase</groupId>
+    <artifactId>liquibase-core</artifactId>
+</dependency>
+----
 
 == Create an unsecured web application
 
 Before you can apply security to a web application, you need a web application to secure. The steps in this section walk you through creating a very simple web application. Then you secure it with Spring Security in the next section.
 
-The web application includes two simple views: a home page and a "Hello World" page. The home page is defined in the following Thymeleaf template:
+The web application includes the rest apis. CRUD for the companies
 
-`src/main/resources/templates/home.html`
-[source,html]
-----
-include::initial/src/main/resources/templates/home.html[]
-----
+image::doc/resources/dbschema.png[]
 
-As you can see, this simple view includes a link to the page "/hello". That is defined in the following Thymeleaf template:
 
-`src/main/resources/templates/hello.html`
-[source,html]
-----
-include::initial/src/main/resources/templates/hello.html[]
-----
+In order to build the Rest apis, we follow the class diagram below:
 
-The web application is based on Spring MVC. Thus you need to configure Spring MVC and set up view controllers to expose these templates. Here's a configuration class for configuring Spring MVC in the application.
+image::doc/resources/class_diagram.png[]
 
-`src/main/java/hello/MvcConfig.java`
+=== Resource layer
+* *Source*
+
+`src/main/java/com/qph/resources/CompanyController.java`
+
+ResponseEntity for the api return type to specify the body, header, and HttpStatusCode
+
+include::https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/http/ResponseEntity.html[]
+
 [source,java]
 ----
-include::initial/src/main/java/hello/MvcConfig.java[]
+@RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+public ResponseEntity<?> create(@RequestBody Company company) {
+    companyService.create(company);
+    HttpHeaders headers = new HttpHeaders();
+    ControllerLinkBuilder linkBuilder = linkTo(methodOn(CompanyController.class).get(company.getId()));
+    headers.setLocation(linkBuilder.toUri());
+    return ResponseEntity.created(linkBuilder.toUri()).headers(headers).build();
+}
 ----
 
-The `addViewControllers()` method (overriding the method of the same name in `WebMvcConfigurer`) adds four view controllers. Two of the view controllers reference the view whose name is "home" (defined in `home.html`), and another references the view named "hello" (defined in `hello.html`). The fourth view controller references another view named "login". You'll create that view in the next section.
+* *Exception handling*
 
-At this point, you could jump ahead to _<<run_the_app>>_ and run the application without having to login to anything.
+@ControllerAdvice is used to handle the global exception throwing by @Controller class
 
-With the base simple web application created, you can add security to it.
+[source,java]
+----
+@ControllerAdvice
+public class ResourceNotFoundAdvice {
 
+    @ResponseBody
+    @ExceptionHandler(ResourceNotFoundException.class)
+    ResponseEntity resourceNotFoundHandler(ResourceNotFoundException ex)
+    {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("reason", ex.getMessage());
+        return ResponseEntity.notFound().headers(headers).build();
+    }
+}
+----
+* *Test*
+
+We use `org.springframework.test.web.servlet.MockMvc` to test the rest apis
+
+`mockMvc = MockMvcBuilders.standaloneSetup(companyController).build();` instantiating the rest api by using
+MockMvcBuilders.standaloneSetup. This is just to test the CompanyController itself. For the exception handling we use
+spring context instead
+
+`Ex testing POST method`
+[source,java]
+----
+mockMvc.perform(post("/secured/company")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(inputCompany))
+        )
+        .andExpect(status().isCreated());
+----
+`Testing GET method`
+[source,java]
+----
+mockMvc.perform(get("/secured/company/{id}", companyId))
+            .andExpect(status().isOk())
+            .andExpect(content().json("{id:100,name:aName}"));
+----
+
+=== Service layer
+=== Dao layer
 
 [[initial]]
 == Set up Spring Security
