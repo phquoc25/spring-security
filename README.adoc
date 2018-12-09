@@ -108,7 +108,42 @@ mockMvc.perform(get("/secured/company/{id}", companyId))
 ----
 
 === Service layer
+
+* *Source*
+
+`/src/main/java/com/qph/services/CompanyServiceImpl.java`
+
+Inject the dependencies by using constructor in order to test without using spring
+[source,java]
+----
+public CompanyServiceImpl(CompanyRepository companyRepository) {
+        this.companyRepository = companyRepository;
+    }
+----
+
+* *Test*
+
+We use mockito to mock the dependencies
+[source,java]
+----
+@RunWith(MockitoJUnitRunner.class)
+public class CompanyServiceImplTest {
+    private CompanyServiceImpl companyService;
+
+    @Mock
+    private CompanyRepository companyRepository;
+
+    @Before
+    public void setUp() {
+        companyService = new CompanyServiceImpl(companyRepository);
+    }
+----
+
 === Dao layer
+
+* *Source*
+
+* *Test*
 
 [[initial]]
 == Set up Spring Security

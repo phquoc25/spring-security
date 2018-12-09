@@ -2,14 +2,13 @@ package com.qph.services;
 
 import com.qph.beans.Company;
 import com.qph.repository.CompanyRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
@@ -18,14 +17,16 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@SpringBootTest
-@ActiveProfiles("test")
 public class CompanyServiceImplTest {
-    @InjectMocks
     private CompanyServiceImpl companyService;
 
     @Mock
     private CompanyRepository companyRepository;
+
+    @Before
+    public void setUp() {
+        companyService = new CompanyServiceImpl(companyRepository);
+    }
 
     @Test
     public void testGetById() {
