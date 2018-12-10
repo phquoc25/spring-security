@@ -43,6 +43,15 @@ In order to build the Rest apis, we follow the class diagram below:
 image::doc/resources/class_diagram.png[]
 
 === Resource layer
+* *Dependencies*
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+----
+
 * *Source*
 
 `src/main/java/com/qph/resources/CompanyController.java`
@@ -108,7 +117,6 @@ mockMvc.perform(get("/secured/company/{id}", companyId))
 ----
 
 === Service layer
-
 * *Source*
 
 `/src/main/java/com/qph/services/CompanyServiceImpl.java`
@@ -140,10 +148,63 @@ public class CompanyServiceImplTest {
 ----
 
 === Dao layer
+* *Dependencies*
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.44</version>
+</dependency>
+
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <version>1.4.194</version>
+    <scope>test</scope>
+</dependency>
+----
 
 * *Source*
 
+We use spring data JPA for accessing database
+[source,java]
+----
+@Repository
+public interface CompanyRepository extends CrudRepository<Company, Long> {
+    Optional<Company> findByName(String name);
+}
+----
+
 * *Test*
+
+The in-memory DB is used to test the dao layer so we have to add a application.properties for test and also activate the
+test profile
+
+`src/test/resources/application-test.properties`
+[source,java]
+----
+spring.liquibase.change-log=classpath:db/liquibase-changelog.xml
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.url=jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1
+
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+----
+`Activate test profile`
+[source,java]
+----
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+@ActiveProfiles("test")
+public class CompanyRepositoryTest {
+----
 
 [[initial]]
 == Set up Spring Security
