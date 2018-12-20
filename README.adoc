@@ -23,10 +23,12 @@ We also use liquibase to manage the database changelog
 
 [source,java]
 ----
+...
 <dependency>
     <groupId>org.liquibase</groupId>
     <artifactId>liquibase-core</artifactId>
 </dependency>
+...
 ----
 
 == Create an unsecured web application
@@ -46,10 +48,12 @@ image::doc/resources/class_diagram.png[]
 * *Dependencies*
 [source,xml]
 ----
+...
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-web</artifactId>
 </dependency>
+...
 ----
 
 * *Source*
@@ -151,6 +155,7 @@ public class CompanyServiceImplTest {
 * *Dependencies*
 [source,xml]
 ----
+...
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -168,6 +173,7 @@ public class CompanyServiceImplTest {
     <version>1.4.194</version>
     <scope>test</scope>
 </dependency>
+...
 ----
 
 * *Source*
@@ -209,70 +215,44 @@ public class CompanyRepositoryTest {
 [[initial]]
 == Set up Spring Security
 
-Suppose that you want to prevent unauthorized users from viewing the greeting page at "/hello". As it is now, if users click the link on the home page, they see the greeting with no barriers to stop them. You need to add a barrier that forces the user to sign in before seeing that page.
+Configure Spring Security in the application. If Spring Security is on the classpath, then Spring Boot {SpringBootSecurity}[automatically secures all HTTP endpoints] with "basic" authentication. But you can further customize the security settings. The first thing you need to do is add Spring Security to the classpath.
 
-You do that by configuring Spring Security in the application. If Spring Security is on the classpath, then Spring Boot {SpringBootSecurity}[automatically secures all HTTP endpoints] with "basic" authentication. But you can further customize the security settings. The first thing you need to do is add Spring Security to the classpath.
+With maven:
 
-With Gradle this would be one line in the `dependencies` closure:
-
-`build.gradle`
+`pom.xml`
 [source,java]
 ----
 dependencies {
     ...
-include::complete/build.gradle[tag=security]
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
     ...
 }
 ----
-
-With Maven this would be an extra entry added to `<dependencies>`:
-
-`pom.xml`
-[source,zml]
-----
-<dependencies>
-    ...
-include::complete/pom.xml[tag=security]
-    ...
-</dependencies>
-----
-
 Here's a security configuration that ensures that only authenticated users can see the secret greeting:
 
 `src/main/java/hello/WebSecurityConfig.java`
-[source,java]
-----
-include::complete/src/main/java/hello/WebSecurityConfig.java[]
-----
+
 
 The `WebSecurityConfig` class is annotated with `@EnableWebSecurity` to enable Spring Security's web security support and provide the Spring MVC integration. It also extends `WebSecurityConfigurerAdapter` and overrides a couple of its methods to set some specifics of the web security configuration.
 
-The `configure(HttpSecurity)` method defines which URL paths should be secured and which should not. Specifically, the "/" and "/home" paths are configured to not require any authentication. All other paths must be authenticated.
+As for the `userDetailsService()` method, we specify the UserDetailService which extends org.springframework.security.core.userdetails.UserDetailsService to get the user authorities for the authorization purpose.
 
-When a user successfully logs in, they will be redirected to the previously requested page that required authentication. There is a custom "/login" page specified by `loginPage()`, and everyone is allowed to view it.
+*User authorities DB schemas*
 
-As for the `userDetailsService()` method, it sets up an in-memory user store with a single user. That user is given a username of "user", a password of "password", and a role of "USER".
+image::doc/resources/user-authorities_DB_schemas.png[]
 
-Now we need to create the login page. There's already a v
-iew controller for the "login" view, so you only need to create the login view itself:
+== OAuth2 Configuration
+First of all, we have to implement the following components:
 
-`src/main/resources/templates/login.html`
-[source,html]
-----
-include::complete/src/main/resources/templates/login.html[]
-----
+* Authorization Server
+* Resource Server
 
-As you can see, this Thymeleaf template simply presents a form that captures a username and password and posts them to "/login". As configured, Spring Security provides a filter that intercepts that request and authenticates the user. If the user fails to authenticate, the page is redirected to "/login?error" and our page displays the appropriate error message. Upon successfully signing out, our application is sent to "/login?logout" and our page displays the appropriate success message.
+=== Authorization Server
 
-Last we need to provide the user a way to display the current username and Sign Out. Update the `hello.html` to say hello to the current user and contain a "Sign Out" form as shown below
-
-`src/main/resources/templates/hello.html`
-[source,html]
-----
-include::complete/src/main/resources/templates/hello.html[]
-----
-
-We display the username by using Spring Security's integration with `HttpServletRequest#getRemoteUser()`. The "Sign Out" form submits a POST to "/logout". Upon successfully logging out it will redirect the user to "/login?logout".
+=== Resource Server
 
 [[run_the_app]]
 == Make the application executable
