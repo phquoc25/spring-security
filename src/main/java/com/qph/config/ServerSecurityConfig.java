@@ -35,6 +35,8 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests().antMatchers("/secured/company").hasAnyRole("COMPANY_READ", "COMPANY_CREATE", "COMPANY_UPDATE", "COMPANY_DELETE")
+                .and().httpBasic()
+                .and().csrf().disable();
     }
 }
