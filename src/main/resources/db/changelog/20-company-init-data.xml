@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="13" author="phquoc25">
+    <changeSet id="20" author="phquoc25">
         <loadData file="db/data/company.csv"
                   quotchar="'"
                   tableName="COMPANY"/>

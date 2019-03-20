@@ -39,7 +39,7 @@ public class CompanyServiceImplSecurityTest {
     }
 
     @Test
-    @WithMockUser(value = "reader", roles = "COMPANY_READ")
+    @WithMockUser(value = "reader", authorities = "ROLE_COMPANY_READ")
     public void testGetById() {
         // GIVEN
         // WHEN

@@ -23,31 +23,31 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    @PreAuthorize("hasRole('COMPANY_READ')")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY_READ')")
     public Optional<Company> get(Long id) {
         return companyRepository.findById(id);
     }
 
     @Override
-    @PreAuthorize("hasRole('COMPANY_READ')")
+    @PreAuthorize("hasRole('COMPANY_READ')") // corresponding to authority ROLE_COMPANY_READ in db
     public Optional<Company> get(String name) {
         return companyRepository.findByName(name);
     }
 
     @Override
-    @PreAuthorize("hasRole('COMPANY_CREATE')")
+    @PreAuthorize("hasAuthority('COMPANY_CREATE')")
     public Company create(Company company) {
         return companyRepository.save(company);
     }
 
     @Override
-    @PreAuthorize("hasRole('COMPANY_UPDATE')")
+    @PreAuthorize("hasAuthority('COMPANY_UPDATE')")
     public Company update(Company company) {
         return companyRepository.save(company);
     }
 
     @Override
-    @PreAuthorize("hasRole('COMPANY_DELETE')")
+    @PreAuthorize("hasAuthority('COMPANY_DELETE')")
     public void delete(Long id) {
         companyRepository.deleteById(id);
     }

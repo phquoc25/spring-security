@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="21" author="phquoc25">
+        <update tableName="AUTHORITY"
+                catalogName="qph_com">
+            <column name="NAME" value="ROLE_COMPANY_READ"/>
+            <where>ID=2</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
