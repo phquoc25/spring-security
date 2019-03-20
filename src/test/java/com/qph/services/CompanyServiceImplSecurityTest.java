@@ -73,7 +73,7 @@ public class CompanyServiceImplSecurityTest {
     }
 
     @Test
-    @WithMockUser(value = "creator", roles = "COMPANY_CREATE")
+    @WithMockUser(value = "creator", authorities = "COMPANY_CREATE")
     public void testCreateCompany() {
         // GIVEN
         // WHEN
@@ -90,7 +90,7 @@ public class CompanyServiceImplSecurityTest {
     }
 
     @Test
-    @WithMockUser(value = "creator", roles = "COMPANY_UPDATE")
+    @WithMockUser(value = "creator", authorities = "COMPANY_UPDATE")
     public void testUpdateCompany() {
         // GIVEN
         // WHEN
@@ -107,7 +107,7 @@ public class CompanyServiceImplSecurityTest {
     }
 
     @Test
-    @WithMockUser(value = "creator", roles = "COMPANY_DELETE")
+    @WithMockUser(value = "creator", authorities = "COMPANY_DELETE")
     public void testDeleteCompany() {
         // GIVEN
         // WHEN
