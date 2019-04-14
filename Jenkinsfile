@@ -29,7 +29,6 @@ pipeline {
 
         stage('Deployment') {
             steps {
-                sh "docker rm mysql-qph-docker"
                 sh "docker run -p 2012:3306 --name mysql-qph-docker -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=qph_com -e MYSQL_USER=app_user -e MYSQL_PASSWORD=root mysql:latest"
                 sh "docker build -f DockerFile -t qph-app ."
                 sh "docker run -t --name qph-app-container --link mysql-qph-docker:mysql -p 8087:8080 qph-app"
