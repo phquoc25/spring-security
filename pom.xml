@@ -70,6 +70,7 @@
 
 
     <build>
+        <finalName>springsecuringqph</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
