@@ -29,9 +29,11 @@ pipeline {
 
         stage('Deployment') {
             steps {
-                docker.build("qph-app", "-f DockerFile")
-                docker.image("qph-app").withRun("--net=host -p 8087:8080") { c ->
-                    sh "echo ${c.id}"
+                script {
+                    docker.build("qph-app", "-f DockerFile")
+                    docker.image("qph-app").withRun("--net=host -p 8087:8080") { c ->
+                        sh "echo ${c.id}"
+                    }
                 }
             }
         }
